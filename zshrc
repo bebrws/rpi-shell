@@ -1,5 +1,5 @@
 
-
+function InstallZINIT() { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)" }
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
@@ -49,15 +49,60 @@ for plugin in ${omz_plugins[@]}; do
     zinit snippet OMZ::plugins/$plugin/$plugin.plugin.zsh
 done
 
-function gsmGetIMEI() { echo -e “ATI\r\n” > /dev/ttyUSB4  }
+
+
+
+setopt hist_ignore_all_dups # remove older duplicate entries from history
+setopt hist_reduce_blanks # remove superfluous blanks from history items
+setopt inc_append_history # save history entries as soon as they are entered
+setopt share_history # share history between different instances of the shell
+setopt auto_cd # cd by typing directory name if it's not a command
+# setopt correct_all # autocorrect commands
+setopt auto_list # automatically list choices on ambiguous completion
+setopt auto_menu # automatically use menu completion
+setopt always_to_end # move cursor to end if word had one match
+# Zsh match autocomplete even with typo
+zstyle ':completion:*' menu select # select completions with arrow keys
+zstyle ':completion:*' group-name '' # group results by category
+zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
+
+# autoload -Uz compinit && compinit 
+
+
+
+### BIND Ctrl and Alt/Option  (left and right) to move whole words!
+## Control Backspace deletes a whole word
+bindkey "\e[1;5C" vi-forward-word
+bindkey "\e[1;5D" vi-backward-word
+# Control m will match bracket
+bindkey '^B' vi-match-bracket
+# Control n will create a new line below
+bindkey '^n' vi-open-line-below
+
+
+export RPISHELL=$HOME/rpi-shell
+
+# Little functions I created after reading the Bash Bible which I think are very helpful
+source $RPISHELL/super-helpful.zsh
+
+
+function gsmGetIMEI() { sudo bash -c " echo -e 'ATI\r\n' > /dev/ttyUSB4"  }
+
 function vimzsh() { vim ~/.zshrc }
 alias vzsh=vimzsh
+function codezsh() { code --disable-extensions  ~/.zshrc  }
+alias czsh=codezsh
+
 function reload() { source ~/.zshrc}
+
 function backupDotFiles() {
-	cp $HOME/.zshrc $HOME/rpi-shell/zshrc
-	pushd $HOME/rpi-shell
+	cp $HOME/.zshrc $RPISHELL/zshrc
+	pushd $RPISHELL
 	git add *
 	git commit -am "`date`"
 	git push origin master
 	popd
 }
+function gsmMinicom(){ sudo minicom -D /dev/ttyUSB4 }
