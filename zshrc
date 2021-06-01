@@ -1,3 +1,8 @@
+HISTFILE=~/.zsh_history
+HISTSIZE=30000
+SAVEHIST=30000
+setopt appendhistory
+
 
 function InstallZINIT() { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)" }
 
@@ -33,6 +38,8 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
       zsh-users/zsh-completions    
 
+export PROMPT='%(?.%F{magenta}△.%F{red}▲)%f ' 
+
 zinit for \
     light-mode zdharma/zui \
     light-mode zdharma/zbrowse \
@@ -66,9 +73,61 @@ zstyle ':completion:*' menu select # select completions with arrow keys
 zstyle ':completion:*' group-name '' # group results by category
 zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
 
+# glob
+setopt extended_glob
+setopt mark_dirs
+
+# history
+setopt extended_history
+setopt hist_fcntl_lock
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt hist_reduce_blanks
+setopt share_history
+
+
+# io
+unsetopt clobber
+setopt correct
+setopt correct_all
+setopt ignore_eof
+
+# job
+setopt auto_resume
+setopt long_list_jobs
+setopt notify
+
+
+alias -g A='awk '
+alias -g C='cut '
+alias -g G='grep '
+alias -g H='head '
+alias -g L='less '
+alias -g S='sort '
+alias -g T='tail '
+alias -g U='uniq '
+alias -g W='wc '
+alias -g X='xargs '
+alias -g P='ps -ef '
+
+
+
+function lw() { ls -al `which "$1"` }
+alias lx='exa -a -a -x' 
+alias l='exa -a -a -l' 
+alias lk='exa -a -l -r -s time' 
+alias lt='exa -a -l -r -s time' 
+
+
+
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
 
 # autoload -Uz compinit && compinit 
+
+
+
+
+
 
 
 
@@ -82,11 +141,20 @@ bindkey '^B' vi-match-bracket
 bindkey '^n' vi-open-line-below
 
 
+
+
+
+
+
+
+
+
 export RPISHELL=$HOME/rpi-shell
 
 # Little functions I created after reading the Bash Bible which I think are very helpful
 source $RPISHELL/super-helpful.zsh
-
+source $RPISHELL/other-helpful.zsh
+source $RPISHELL/shortcuts-helpful.zsh   # Remeber to checkout what is avaiable with shortcutHelp or printShortcutHelp
 
 function gsmGetIMEI() { sudo bash -c " echo -e 'ATI\r\n' > /dev/ttyUSB4"  }
 
