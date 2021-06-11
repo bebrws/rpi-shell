@@ -3,6 +3,9 @@ HISTSIZE=30000
 SAVEHIST=30000
 setopt appendhistory
 
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
 
 function InstallZINIT() { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)" }
 
